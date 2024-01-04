@@ -8,7 +8,6 @@ in vec3 fNormal;
 in vec3 fCameraPos;
 in vec3 fLightDir;
 in vec4 fPosition;
-uniform int shaderState;
 
 void main()
 {
@@ -26,18 +25,6 @@ void main()
 
 	
 	lightedCol = vec3(0.8,0.8,0.8) * dotProduct;
-	
-	vec3 cameraToFragN = normalize(cameraToFrag);
-	
-	float outlineDotProduct = dot(cameraToFragN, fNormal)/1.6;
-	
-	outlineDotProduct = -((outlineDotProduct-1) * (outlineDotProduct-1)) + 1;
-	
-	
-	vec3 outlineCol = vec3(fColor);
-
-	
-	fragColor = vec4((1-outlineDotProduct) * outlineCol + outlineDotProduct * lightedCol, 1.0);
 	
 
 }

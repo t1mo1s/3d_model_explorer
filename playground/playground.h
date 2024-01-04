@@ -29,6 +29,8 @@ float width, height;
 
 GLuint cameraPosID;
 glm::vec3 cameraPos;
+glm::vec3 cameraFront;
+glm::vec3 cameraUp;
 
 float curr_x;
 float curr_y;

@@ -39,21 +39,19 @@ int switchedScene = 0;
 bool keyD = false;
 bool keyA = false;
 
+
+// global variables to handle the MVP matrix
+double lastX = width / 2.0, lastY = height / 2.0;
+bool firstMouse = true;
+float yaw = -90.0f;
+float pitch = 0.0f;
+
+
 int main(void)
 {
     //Initialize window
     bool windowInitialized = initializeWindow();
     if (!windowInitialized) return -1;
-
-	
-    
-   
-    
-    //Initialize vertex buffer
-   // bool vertexbufferInitialized = initializeVertexbuffer();
-    //if (!vertexbufferInitialized) return -1;
-    
-	//textureTest();
 
     glEnable(GL_DEPTH_TEST);
 
@@ -65,13 +63,9 @@ int main(void)
 	std::shared_ptr<GameObject> lightingDemoObj = std::make_shared<LightingDemoObj>(programID, "../stlFiles/Dragon 2.5_stl.stl", width/height);
 	gameObjects.push_back(lightingDemoObj);
 
-	
-
+    cameraFront = glm::vec3(0.0f, 0.0f, 0.0f); // Anfangsrichtung, in die die Kamera schaut
+    cameraUp = glm::vec3(0.0f, 1.0f, 0.0f); // "Oben" Vektor der Welt
     createVPTransformation();
-
-    /*curr_x = 50;
-    curr_y = 20;
-    curr_z = 0;*/
 
    curr_x = startPos.x;
    curr_y = startPos.y;
@@ -138,22 +132,20 @@ void parseStl(std::vector< glm::vec3 >& vertices,
 
 void updateAnimationLoop()
 {
+
     // set variable time to current time in miliseconds
 	curr_time = (float)glfwGetTime() - applicationStartTimeStamp;
 
-    //switchCamera(curr_time);
-    //switchScenes(curr_time);
-    
     // Clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Use our shader
     glUseProgram(programID);
 
-    if (glfwGetKey(window, GLFW_KEY_W)) curr_y += 0.011;
-    else if (glfwGetKey(window, GLFW_KEY_S)) curr_y -= 0.011;
-    else if (glfwGetKey(window, GLFW_KEY_A)) curr_x -= 0.011;
-    else if (glfwGetKey(window, GLFW_KEY_D)) curr_x += 0.011;
+    if (glfwGetKey(window, GLFW_KEY_W)) curr_x -= 0.111;
+    else if (glfwGetKey(window, GLFW_KEY_S)) curr_x += 0.111;
+    //else if (glfwGetKey(window, GLFW_KEY_A)) curr_x -= 0.011;
+    //else if (glfwGetKey(window, GLFW_KEY_D)) curr_x += 0.011;
 
     else if (glfwGetKey(window, GLFW_KEY_Z)) curr_z -= 0.11;
     else if (glfwGetKey(window, GLFW_KEY_T)) curr_z += 0.11;
@@ -181,15 +173,37 @@ void updateAnimationLoop()
     glfwPollEvents();
 }
 
-void switchCamera(float time) {
-    if (time > 11.4 && time < 12.4) {
-        float movementFinished = time - 11.4;;
-        curr_x = (1 - movementFinished) * startPos.x + movementFinished * endPosScene1.x;
-        curr_y = (1 - movementFinished) * startPos.y + movementFinished * endPosScene1.y;
-        curr_z = (1 - movementFinished) * startPos.z + movementFinished * endPosScene1.z;
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    if (firstMouse) {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
     }
-}
 
+    float xoffset = xpos - lastX;
+    float yoffset = ypos- lastY; // Umgekehrt, da y-Koordinaten von unten nach oben gehen
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.1f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw += xoffset;
+    pitch += yoffset;
+
+    // Sicherstellen, dass der Bildschirm nicht überkippt
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+    if (pitch < -89.0f)
+        pitch = -89.0f;
+
+    glm::vec3 front;
+    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    front.y = sin(glm::radians(pitch));
+    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(front);
+}
 
 bool initializeWindow()
 {
@@ -207,6 +221,7 @@ bool initializeWindow()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+
     // Open a window and create its OpenGL context
     width = 1920;
 	height = 1080;
@@ -218,6 +233,8 @@ bool initializeWindow()
         return false;
     }
     glfwMakeContextCurrent(window);
+
+
 
     // Initialize GLEW
     glewExperimental = true; // Needed for core profile
@@ -231,6 +248,12 @@ bool initializeWindow()
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
+
+    // Setze den Maus-Cursor-Modus
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    // Registriere den Maus-Callback
+    glfwSetCursorPosCallback(window, mouse_callback);
     // Dark blue background
     glClearColor(0.0f, 0.0f, 0.1f, 0.0f);
     return true;
@@ -255,10 +278,9 @@ bool createVPTransformation() {
 	cameraPos = glm::vec3(curr_x, curr_y, curr_z);
     
     glm::mat4 View = glm::lookAt(
-            glm::vec3(200, 50, 30), // Camera is at (4,3,-3), in World Space
-        glm::vec3(0, 0, 0), // and looks at the origin
-        glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-
+        cameraPos, // Camera is at (4,3,3), in World Space
+        cameraPos - cameraFront, // and looks at the origin
+        cameraUp  // Head is up (set to 0,-1,0 to look upside-down)
     );
 
     
@@ -288,3 +310,5 @@ bool closeWindow()
     glfwTerminate();
     return true;
 }
+
+

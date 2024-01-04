@@ -54,7 +54,7 @@ void LightingDemoObj::Update(bool keyA, bool keyD, float curr_time)
     if (keyD) {
          rotation.y -= 0.1f;
     }
-    Model = glm::rotate(Model, rotation.y, glm::vec3(0.0f, 0.0f, 1.0f));
+    //Model = glm::rotate(Model, rotation.y, glm::vec3(0.0f, 0.0f, 1.0f));
     Model = transformation * Model;
 
 	GLuint model = glGetUniformLocation(programID, "model");
