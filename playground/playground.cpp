@@ -133,6 +133,29 @@ void parseStl(std::vector< glm::vec3 >& vertices,
 void updateAnimationLoop()
 {
 
+    float cameraSpeed = 0.7f; // passen Sie die Geschwindigkeit nach Bedarf an
+
+    // Berechne den horizontalen Frontvektor ohne Höhenänderung
+    glm::vec3 cameraFrontHorizontal = cameraFront;
+    cameraFrontHorizontal.y = 0;
+    cameraFrontHorizontal = glm::normalize(cameraFrontHorizontal);
+
+    // Berechne den Rechtsvektor, der senkrecht zur Blickrichtung und zum Up-Vektor steht
+    glm::vec3 cameraRight = glm::normalize(glm::cross(cameraFrontHorizontal, cameraUp));
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraFrontHorizontal;
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraFrontHorizontal;
+
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraPos += cameraRight * cameraSpeed;
+
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraPos -= cameraRight * cameraSpeed;
+
+
     // set variable time to current time in miliseconds
 	curr_time = (float)glfwGetTime() - applicationStartTimeStamp;
 
@@ -142,14 +165,12 @@ void updateAnimationLoop()
     // Use our shader
     glUseProgram(programID);
 
-    if (glfwGetKey(window, GLFW_KEY_W)) curr_x -= 0.111;
-    else if (glfwGetKey(window, GLFW_KEY_S)) curr_x += 0.111;
+    //if (glfwGetKey(window, GLFW_KEY_W)) curr_x -= 0.111;
+    //else if (glfwGetKey(window, GLFW_KEY_S)) curr_x += 0.111;
     //else if (glfwGetKey(window, GLFW_KEY_A)) curr_x -= 0.011;
     //else if (glfwGetKey(window, GLFW_KEY_D)) curr_x += 0.011;
 
-    else if (glfwGetKey(window, GLFW_KEY_Z)) curr_z -= 0.11;
-    else if (glfwGetKey(window, GLFW_KEY_T)) curr_z += 0.11;
-    else if (glfwGetKey(window, GLFW_KEY_R)) curr_angle += 0.01;
+    //
 
 	
     createVPTransformation();
@@ -275,7 +296,7 @@ bool createVPTransformation() {
     //glm::mat4 Projection = glm::frustum(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
     // Camera matrix
 
-	cameraPos = glm::vec3(curr_x, curr_y, curr_z);
+	//cameraPos = glm::vec3(curr_x, curr_y, curr_z);
     
     glm::mat4 View = glm::lookAt(
         cameraPos, // Camera is at (4,3,3), in World Space
