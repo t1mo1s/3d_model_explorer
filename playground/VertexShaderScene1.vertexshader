@@ -1,33 +1,41 @@
 #version 450 core
+
 // Input vertex data, different for all executions of this shader.
 layout(location = 0) in vec3 vertexPosition_modelspace;
 layout(location = 1) in vec3 vertexNormal_modelspace;
 
-// Values that stay constant for the whole mesh.
+// Uniform variables are set per draw call.
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform vec3 cameraPos;
 uniform vec3 color;
-//Output variables
+
+// Output variables to fragment shader.
 out vec3 fColor;
 out vec3 fNormal;
 out vec3 fCameraPos;
 out vec3 fLightDir;
 out vec4 fPosition;
-void main(){
 
-	fLightDir = vec3(0,0,1);
-	
-	vec4 normal = view * model * vec4(vertexNormal_modelspace, 0);
-	fNormal = normalize(normal.xyz);
-	fColor = color;
-	fCameraPos = cameraPos;
+void main() {
+    // Direction of the light, pointing upwards.
+    fLightDir = vec3(0, 0, 1);
 
-	mat4 mvp = projection * view * model;
-	
-	gl_Position =  mvp * vec4(vertexPosition_modelspace,1);
-	
-	fPosition = view * model * vec4(vertexPosition_modelspace,1);
-	
+    // Transform the normal to the view space.
+    vec4 normal = view * model * vec4(vertexNormal_modelspace, 0);
+    fNormal = normalize(normal.xyz);
+
+    // Pass color and camera position to the fragment shader.
+    fColor = color;
+    fCameraPos = cameraPos;
+
+    // Calculate Model-View-Projection matrix.
+    mat4 mvp = projection * view * model;
+
+    // Set the position of the current vertex.
+    gl_Position = mvp * vec4(vertexPosition_modelspace, 1);
+
+    // Transform the vertex position to view space.
+    fPosition = view * model * vec4(vertexPosition_modelspace, 1);
 }

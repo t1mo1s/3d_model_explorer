@@ -1,33 +1,27 @@
 #version 330 core
 
-// Ouput data
-out vec4 fragColor;
-
+// Input data from vertex shader.
 in vec3 fColor;
 in vec3 fNormal;
 in vec3 fCameraPos;
 in vec3 fLightDir;
 in vec4 fPosition;
 
-void main()
-{
-	fragColor = vec4(fColor, 1.0);
+// Output color of the pixel.
+out vec4 fragColor;
 
-	vec3 cameraToFrag = vec3(fCameraPos.x - fPosition.x, fCameraPos.y - fPosition.y, fCameraPos.z - fPosition.z);
-	float brightness = sin(length(cameraToFrag));
-	fragColor = brightness * vec4(fColor,1.0);
+void main() {
+    // Calculate the direction from camera to fragment.
+    vec3 cameraToFrag = vec3(fCameraPos.x - fPosition.x, fCameraPos.y - fPosition.y, fCameraPos.z - fPosition.z);
 
-	
-	float dotProduct = dot(fNormal, fLightDir);
-	vec3 lightedCol =fColor*dotProduct;
-	
-	fragColor = vec4(lightedCol, 1.0);
+    // Simple lighting calculation based on distance to camera.
+    float brightness = sin(length(cameraToFrag));
+    fragColor = brightness * vec4(fColor, 1.0);
 
-	
-	lightedCol = vec3(0.8,0.8,0.8) * dotProduct;
-	
+    // Calculate how much light hits the surface (dot product).
+    float dotProduct = dot(fNormal, fLightDir);
+    vec3 lightedCol = fColor * dotProduct;
 
+    // Set the color of the pixel.
+    fragColor = vec4(lightedCol, 1.0);
 }
-
-
-
