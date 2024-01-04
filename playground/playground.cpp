@@ -172,17 +172,7 @@ void updateAnimationLoop()
 
     // Use our shader
     glUseProgram(programID);
-
-    //if (glfwGetKey(window, GLFW_KEY_W)) curr_x -= 0.111;
-    //else if (glfwGetKey(window, GLFW_KEY_S)) curr_x += 0.111;
-    //else if (glfwGetKey(window, GLFW_KEY_A)) curr_x -= 0.011;
-    //else if (glfwGetKey(window, GLFW_KEY_D)) curr_x += 0.011;
-
-    //
-
-	
     createVPTransformation();
-
     // Send our transformation to the currently bound shader, 
     // in the "MVP" uniform
     glUniformMatrix4fv(viewID, 1, GL_FALSE, &view[0][0]);
@@ -191,7 +181,7 @@ void updateAnimationLoop()
 
     for (int i = 0; i < gameObjects.size(); i++)
     {
-        gameObjects.at(i)->Update(keyA, keyD, curr_time);
+        gameObjects.at(i)->Update();
     }
 
     glDisableVertexAttribArray(0);
@@ -300,18 +290,14 @@ bool createVPTransformation() {
 
 	GLuint cameraPosIDNew = glGetUniformLocation(cameraPosID, "cameraPos");
 	cameraPosID = cameraPosIDNew;
-    
-    // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 500.0f);
-    //glm::mat4 Projection = glm::frustum(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 2.0f);
-    // Camera matrix
 
-	//cameraPos = glm::vec3(curr_x, curr_y, curr_z);
+    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 500.0f);
+    // Camera matrix
     
     glm::mat4 View = glm::lookAt(
-        cameraPos, // Camera is at (4,3,3), in World Space
-        cameraPos - cameraFront, // and looks at the origin
-        cameraUp  // Head is up (set to 0,-1,0 to look upside-down)
+        cameraPos,
+        cameraPos - cameraFront,
+        cameraUp
     );
 
     

@@ -9,23 +9,7 @@ LightingDemoObj::LightingDemoObj(GLuint shaderProgramID, std::string fileName, f
 {
     this->programID = shaderProgramID;
     this->fileName = fileName;
-    this->position.x = 0.0f;
-    this->position.y = 0.0f;
-    this->position.z = 0.0f;
-    this->rotation.x = 0.0f;
-    this->rotation.y = 0.0f;
-    this->rotation.z = 0.0f;
-    this->scale.x = 0.5f;
-    this->scale.y = 0.5f;
-    this->scale.z = 0.5f;
-    this->aspectRatio = aspectRatio;
-    this->previousTime = 0.0f;
-
-    rotationDir = false;
-    shaderState = 0;
-    prevState = 0;
 	color = glm::vec3(1.0f, 0, 0);
-    changeAtTime =0.72f;
 	initializeBuffers();
 }
 
@@ -33,29 +17,11 @@ LightingDemoObj::~LightingDemoObj()
 {
 }
 
-void LightingDemoObj::Update(bool keyA, bool keyD, float curr_time)
+void LightingDemoObj::Update()
 {
     glm::mat4 Model = glm::mat4(1.0f);
 
     Model = glm::rotate(Model, -1.5708f, glm::vec3(1.0f, 0.0f, 0.0f));
-    
-
-    glm::mat4 transformation;//additional transformation for the model
-    transformation[0][0] = aspectRatio * 1; transformation[1][0] = 0.0; transformation[2][0] = 0.0; transformation[3][0] = position.x;
-    transformation[0][1] = 0.0; transformation[1][1] = 1.0; transformation[2][1] = 0.0; transformation[3][1] = position.y;
-    transformation[0][2] = 0.0; transformation[1][2] = 0.0; transformation[2][2] = 1.0; transformation[3][2] = position.z;
-    transformation[0][3] = 0.0; transformation[1][3] = 0.0; transformation[2][3] = 0.0; transformation[3][3] = 1.0;
-
-
-    // if a key is pressed, rotate the object
-    if (keyA) {
-        rotation.y += 0.1f;
-    }
-    if (keyD) {
-         rotation.y -= 0.1f;
-    }
-    //Model = glm::rotate(Model, rotation.y, glm::vec3(0.0f, 0.0f, 1.0f));
-    Model = transformation * Model;
 
 	GLuint model = glGetUniformLocation(programID, "model");
 

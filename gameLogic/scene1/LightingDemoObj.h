@@ -23,7 +23,7 @@ private:
 	int shaderState;
 	bool initializeBuffers() override;
 	void cleanupBuffers() override;
-    void Update(bool keyA, bool keyD, float curr_time) override;
+    void Update() override;
 };
 
 #endif // !LIGHTINGDEMOBJ
