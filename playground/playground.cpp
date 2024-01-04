@@ -28,7 +28,6 @@ using namespace glm;
 
 #include "gameLogic/GameObject.h"
 #include "gameLogic/scene1/LightingDemoObj.h"
-#include "gameLogic/scene2/RectangleObj.h"
 
 
 std::vector< std::shared_ptr<GameObject> > gameObjects;
@@ -36,6 +35,9 @@ float applicationStartTimeStamp; //time stamp of application start
 glm::vec3 startPos = glm::vec3(50, 20, 0);
 glm::vec3 endPosScene1 = glm::vec3(-0.3, 6.7, -8.8);
 int switchedScene = 0;
+
+bool keyD = false;
+bool keyA = false;
 
 int main(void)
 {
@@ -77,6 +79,21 @@ int main(void)
 
     //start animation loop until escape key is pressed
     do {
+
+        // if a key is pressed , set the corresponding bool to true
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+            keyA = true;
+        }
+        else {
+            keyA = false;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+            keyD = true;
+        }
+        else {
+            keyD = false;
+        }
 
         updateAnimationLoop(); 
 
@@ -153,7 +170,7 @@ void updateAnimationLoop()
 
     for (int i = 0; i < gameObjects.size(); i++)
     {
-        gameObjects.at(i)->Update(curr_time);
+        gameObjects.at(i)->Update(keyA, keyD, curr_time);
     }
 
     glDisableVertexAttribArray(0);
@@ -173,30 +190,6 @@ void switchCamera(float time) {
     }
 }
 
-void switchScenes(float time) {
-    if (time > 19.4 && switchedScene < 2) {
-
-        switchedScene = 2;
-        programID = LoadShaders("../playground/VertexShaderScene2.vertexshader", "../playground/FragmentShaderScene2.fragmentshader");
-        
-        // create Rectangle Obj
-        std::shared_ptr<GameObject> rectangleObj = std::make_shared<RectangleObj>(programID, (width / height), time);
-		// clear all game objects
-		gameObjects.clear();
-		gameObjects.push_back(rectangleObj);
-        
-    }
-	else if (time > 12.4 && switchedScene < 1) {
-        switchedScene = 1;
-        curr_x = endPosScene1.x;
-        curr_y = endPosScene1.y;
-        curr_z = endPosScene1.z;
-        
-        programID = LoadShaders("../playground/VertexShaderScene1.vertexshader", "../playground/FragmentShaderScene1Ending.fragmentshader");
-		gameObjects[0]->setShaderProgramID(programID);
-
-    }
-}
 
 bool initializeWindow()
 {
@@ -262,7 +255,7 @@ bool createVPTransformation() {
 	cameraPos = glm::vec3(curr_x, curr_y, curr_z);
     
     glm::mat4 View = glm::lookAt(
-       cameraPos, // Camera is at (4,3,-3), in World Space
+            glm::vec3(200, 50, 30), // Camera is at (4,3,-3), in World Space
         glm::vec3(0, 0, 0), // and looks at the origin
         glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 

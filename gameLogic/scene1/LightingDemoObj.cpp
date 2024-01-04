@@ -33,35 +33,8 @@ LightingDemoObj::~LightingDemoObj()
 {
 }
 
-void LightingDemoObj::Update(float time)
+void LightingDemoObj::Update(bool keyA, bool keyD, float curr_time)
 {
-    
-    if (time > changeAtTime) {
-        shaderState++;
-        changeAtTime += 0.365f;
-
-    }
-    
-    if (prevState != shaderState) {
-
-        //set new seed to rand
-		srand(static_cast <unsigned> (previousTime * 1000.0f));
-        
-        //generate random float between 0.0f and 1.0f
-       
-		color.x = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-		color.y = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-		color.z = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-
-        if (shaderState % 4 == 0) {
-            rotationDir = !rotationDir;
-        }
-        std::cout << shaderState << std::endl;
-
-       	
-    }
-	prevState = shaderState;
-
     glm::mat4 Model = glm::mat4(1.0f);
 
     Model = glm::rotate(Model, -1.5708f, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -72,26 +45,17 @@ void LightingDemoObj::Update(float time)
     transformation[0][1] = 0.0; transformation[1][1] = 1.0; transformation[2][1] = 0.0; transformation[3][1] = position.y;
     transformation[0][2] = 0.0; transformation[1][2] = 0.0; transformation[2][2] = 1.0; transformation[3][2] = position.z;
     transformation[0][3] = 0.0; transformation[1][3] = 0.0; transformation[2][3] = 0.0; transformation[3][3] = 1.0;
-    
-    
-   
 
-    if(rotationDir)
-        rotation.z -= 0 * (time - previousTime);
-    else
-        rotation.z += 0 * (time - previousTime);
-    previousTime = time;
 
-    if (shaderState > 30) {
-        rotation.z = 0;
-        Model = glm::rotate(Model, 1.5708f, glm::vec3(0.0f, 0.0f, 1.0f));
+    // if a key is pressed, rotate the object
+    if (keyA) {
+        rotation.y += 0.1f;
     }
-    else
-    {
-        Model = glm::rotate(Model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    if (keyD) {
+         rotation.y -= 0.1f;
     }
-
-    Model = transformation * Model;
+    Model = glm::rotate(Model, rotation.y, glm::vec3(0.0f, 0.0f, 1.0f));
+    Model =  Model;
 
 	GLuint model = glGetUniformLocation(programID, "model");
 
@@ -100,8 +64,6 @@ void LightingDemoObj::Update(float time)
     GLuint colorID = glGetUniformLocation(programID, "color");
 	glUniform3f(colorID, color.x, color.y, color.z);
 
-
-    
     Draw();
 }
 

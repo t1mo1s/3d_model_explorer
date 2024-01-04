@@ -72,8 +72,6 @@ add_executable(playground
 	gameLogic/GameObject.cpp
 	gameLogic/scene1/LightingDemoObj.h
 	gameLogic/scene1/LightingDemoObj.cpp
-	gameLogic/scene2/RectangleObj.h
-	gameLogic/scene2/RectangleObj.cpp
 
 )
 target_link_libraries(playground

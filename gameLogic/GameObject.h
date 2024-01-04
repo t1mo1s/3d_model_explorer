@@ -17,7 +17,7 @@ public:
 	glm::vec3 scale;
 	std::string fileName;
 	GLuint programID;
-	virtual void Update(float time) = 0;
+	virtual void Update(bool keyA, bool keyD, float curr_time) = 0;
 	virtual void Draw() = 0;
 	void parseStl(std::vector< glm::vec3 >& vertices, std::vector< glm::vec3 >& normals, std::string stl_file_name);
 	void setPosition(float x, float y, float z);

@@ -7,7 +7,7 @@ class LightingDemoObj: public GameObject
 public:
 	LightingDemoObj(GLuint shaderProgramID, std::string fileName, float aspectRatio);
 	~LightingDemoObj();
-	void Update(float time) override;
+	//void Update(float time) override;
 	void Draw() override;
 	float previousTime;
 private:
@@ -23,6 +23,7 @@ private:
 	int shaderState;
 	bool initializeBuffers() override;
 	void cleanupBuffers() override;
+    void Update(bool keyA, bool keyD, float curr_time) override;
 };
 
 #endif // !LIGHTINGDEMOBJ
