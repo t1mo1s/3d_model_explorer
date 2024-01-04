@@ -54,19 +54,14 @@ add_definitions(
 )
 
 # User playground
-add_executable(playground 
+add_executable(playground
+		playground/playground.cpp
 	playground/parse_stl.cpp
 	playground/parse_stl.h
-	playground/playground.cpp
-	playground/playground.h
-	playground/SimpleFragmentShader.fragmentshader
-	playground/SimpleVertexShader.vertexshader
-	playground/FragmentShaderScene1.fragmentshader
-	playground/FragmentShaderScene1Ending.fragmentshader
-	playground/VertexShaderScene1.vertexshader
-	playground/FragmentShaderScene2.fragmentshader
-	playground/VertexShaderScene2.vertexshader
-	common/shader.cpp
+		playground/playground.h
+		playground/FragmentShaderScene1.fragmentshader
+		playground/VertexShaderScene1.vertexshader
+		common/shader.cpp
 	common/shader.hpp
 	gameLogic/GameObject.h
 	gameLogic/GameObject.cpp

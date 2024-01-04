@@ -15,9 +15,9 @@ LightingDemoObj::LightingDemoObj(GLuint shaderProgramID, std::string fileName, f
     this->rotation.x = 0.0f;
     this->rotation.y = 0.0f;
     this->rotation.z = 0.0f;
-    this->scale.x = 1.0f;
-    this->scale.y = 1.0f;
-    this->scale.z = 1.0f;
+    this->scale.x = 0.5f;
+    this->scale.y = 0.5f;
+    this->scale.z = 0.5f;
     this->aspectRatio = aspectRatio;
     this->previousTime = 0.0f;
 
@@ -55,7 +55,7 @@ void LightingDemoObj::Update(bool keyA, bool keyD, float curr_time)
          rotation.y -= 0.1f;
     }
     Model = glm::rotate(Model, rotation.y, glm::vec3(0.0f, 0.0f, 1.0f));
-    Model =  Model;
+    Model = transformation * Model;
 
 	GLuint model = glGetUniformLocation(programID, "model");
 
