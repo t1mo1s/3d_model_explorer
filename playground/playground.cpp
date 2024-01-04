@@ -32,7 +32,7 @@ using namespace glm;
 
 std::vector< std::shared_ptr<GameObject> > gameObjects;
 float applicationStartTimeStamp; //time stamp of application start
-glm::vec3 startPos = glm::vec3(50, 20, 0);
+glm::vec3 startPos = glm::vec3(-55, 20, 100);
 glm::vec3 endPosScene1 = glm::vec3(-0.3, 6.7, -8.8);
 int switchedScene = 0;
 
@@ -43,12 +43,13 @@ bool keyA = false;
 // global variables to handle the MVP matrix
 double lastX = width / 2.0, lastY = height / 2.0;
 bool firstMouse = true;
-float yaw = -90.0f;
-float pitch = 0.0f;
+float yaw = 118.7f;
+float pitch = 3.5f;
 
 
 int main(void)
 {
+    cameraPos = startPos;
     //Initialize window
     bool windowInitialized = initializeWindow();
     if (!windowInitialized) return -1;
@@ -132,8 +133,15 @@ void parseStl(std::vector< glm::vec3 >& vertices,
 
 void updateAnimationLoop()
 {
+    // print yaw and pitch
+    std::cout << "yaw: " << yaw << " pitch: " << pitch << std::endl;
 
-    float cameraSpeed = 0.7f; // passen Sie die Geschwindigkeit nach Bedarf an
+    // print camera Front
+    std::cout << "cameraFront: " << cameraFront.x << " " << cameraFront.y << " " << cameraFront.z << std::endl;
+    // print camera position
+    std::cout << "cameraPos: " << cameraPos.x << " " << cameraPos.y << " " << cameraPos.z << std::endl;
+
+    float cameraSpeed = 0.3f; // passen Sie die Geschwindigkeit nach Bedarf an
 
     // Berechne den horizontalen Frontvektor ohne Höhenänderung
     glm::vec3 cameraFrontHorizontal = cameraFront;
@@ -212,6 +220,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
     yaw += xoffset;
     pitch += yoffset;
+    // print yaw and pitch
+    std::cout << "yaw: " << yaw << " pitch: " << pitch << std::endl;
 
     // Sicherstellen, dass der Bildschirm nicht überkippt
     if (pitch > 89.0f)
