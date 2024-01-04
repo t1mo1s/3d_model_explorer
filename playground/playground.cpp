@@ -26,8 +26,8 @@ using namespace glm;
 //include time
 #include <time.h>
 
-#include "gameLogic/GameObject.h"
-#include "gameLogic/scene1/LightingDemoObj.h"
+#include "GameObject.h"
+#include "MainObject.h"
 
 
 std::vector< std::shared_ptr<GameObject> > gameObjects;
@@ -61,7 +61,7 @@ int main(void)
 
     Sleep(200);
     applicationStartTimeStamp = (float)glfwGetTime();
-	std::shared_ptr<GameObject> lightingDemoObj = std::make_shared<LightingDemoObj>(programID, "../stlFiles/Dragon 2.5_stl.stl", width/height);
+	std::shared_ptr<GameObject> lightingDemoObj = std::make_shared<MainObject>(programID, "../stlFiles/Dragon 2.5_stl.stl", width / height);
 	gameObjects.push_back(lightingDemoObj);
 
     cameraFront = glm::vec3(0.0f, 0.0f, 0.0f); // Anfangsrichtung, in die die Kamera schaut

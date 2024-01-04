@@ -63,10 +63,10 @@ add_executable(playground
 		playground/VertexShaderScene1.vertexshader
 		common/shader.cpp
 	common/shader.hpp
-	gameLogic/GameObject.h
-	gameLogic/GameObject.cpp
-	gameLogic/scene1/LightingDemoObj.h
-	gameLogic/scene1/LightingDemoObj.cpp
+		playground/GameObject.h
+		playground/GameObject.cpp
+		playground/MainObject.h
+		playground/MainObject.cpp
 
 )
 target_link_libraries(playground

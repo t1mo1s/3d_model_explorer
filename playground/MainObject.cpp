@@ -1,11 +1,11 @@
-#include "LightingDemoObj.h"
+#include "MainObject.h"
 #include <vector>
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "GL/glew.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include <iostream>
 
-LightingDemoObj::LightingDemoObj(GLuint shaderProgramID, std::string fileName, float aspectRatio) : GameObject(shaderProgramID, fileName, aspectRatio)
+MainObject::MainObject(GLuint shaderProgramID, std::string fileName, float aspectRatio) : GameObject(shaderProgramID, fileName, aspectRatio)
 {
     this->programID = shaderProgramID;
     this->fileName = fileName;
@@ -13,11 +13,11 @@ LightingDemoObj::LightingDemoObj(GLuint shaderProgramID, std::string fileName, f
 	initializeBuffers();
 }
 
-LightingDemoObj::~LightingDemoObj()
+MainObject::~MainObject()
 {
 }
 
-void LightingDemoObj::Update()
+void MainObject::Update()
 {
     glm::mat4 Model = glm::mat4(1.0f);
 
@@ -33,7 +33,7 @@ void LightingDemoObj::Update()
     Draw();
 }
 
-void LightingDemoObj::Draw()
+void MainObject::Draw()
 {
     // Use our shader
     glUseProgram(programID);
@@ -70,7 +70,7 @@ void LightingDemoObj::Draw()
     glDrawArrays(GL_TRIANGLES, 0, vb_size*3); // 3 indices starting at 0 -> 1 triangle
 }
 
-bool LightingDemoObj::initializeBuffers()
+bool MainObject::initializeBuffers()
 {
 
 	shaderStateID = glGetUniformLocation(programID, "shaderState");
@@ -103,6 +103,6 @@ bool LightingDemoObj::initializeBuffers()
     return true;
 }
 
-void LightingDemoObj::cleanupBuffers()
+void MainObject::cleanupBuffers()
 {
 }

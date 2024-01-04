@@ -1,12 +1,12 @@
 #ifndef LIGHTINGDEMOBJ_H
 #define LIGHTINGDEMOBJ_H
-#include "./gameLogic/GameObject.h"
+#include "GameObject.h"
 
-class LightingDemoObj: public GameObject
+class MainObject: public GameObject
 {
 public:
-	LightingDemoObj(GLuint shaderProgramID, std::string fileName, float aspectRatio);
-	~LightingDemoObj();
+	MainObject(GLuint shaderProgramID, std::string fileName, float aspectRatio);
+	~MainObject();
 	//void Update(float time) override;
 	void Draw() override;
 	float previousTime;
